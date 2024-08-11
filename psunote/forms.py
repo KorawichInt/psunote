@@ -34,8 +34,11 @@ class TagListField(Field):
             return ""
 
 
+# BaseNoteForm = model_form(
+#     models.Note, base_class=FlaskForm, exclude=["created_date", "updated_date"]
+# )
 BaseNoteForm = model_form(
-    models.Note, base_class=FlaskForm, exclude=["created_date", "updated_date"]
+    models.Note, base_class=FlaskForm, exclude=["created_date", "updated_date"], db_session=models.db.session
 )
 
 

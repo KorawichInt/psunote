@@ -50,3 +50,7 @@ class Note(db.Model):
 
     created_date = mapped_column(sa.DateTime(timezone=True), server_default=func.now())
     updated_date = mapped_column(sa.DateTime(timezone=True), server_default=func.now())
+
+@sa.event.listens_for(Note, 'before_update', propagate=True)
+def receive_before_update(mapper, connection, target):
+    target.updated_date = func.now()

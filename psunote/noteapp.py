@@ -25,6 +25,7 @@ def index():
     )
 
 
+# Create Notes
 @app.route("/notes/create", methods=["GET", "POST"])
 def notes_create():
     form = forms.NoteForm()
@@ -58,6 +59,7 @@ def notes_create():
     return flask.redirect(flask.url_for("index"))
 
 
+# Delete each note 
 @app.route("/notes/delete/<note_id>", methods=["POST"])
 def notes_delete(note_id):
     db = models.db
@@ -67,6 +69,28 @@ def notes_delete(note_id):
     if note:
         db.session.delete(note)
         db.session.commit()
+
+    return flask.redirect(flask.url_for("index"))
+
+
+# Delete all notes by tag
+@app.route("/tags/<tag_id>/delete_notes", methods=["POST"])
+def delete_notes_by_tag(tag_id):
+    db = models.db
+    tag = (
+        db.session.execute(db.select(models.Tag).where(models.Tag.id == tag_id))
+        .scalars()
+        .first()
+    )
+    if tag:
+        notes = db.session.execute(
+            db.select(models.Note).where(models.Note.tags.any(id=tag.id))
+        ).scalars().all()
+
+        for note in notes:
+            db.session.delete(note)
+        db.session.commit()
+
     return flask.redirect(flask.url_for("index"))
 
 

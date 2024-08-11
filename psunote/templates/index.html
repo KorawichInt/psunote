@@ -10,21 +10,27 @@
   <div class="card-body">
     <h4 class="card-title">
       {{ note.title }}
-      <!-- <a class="btn btn-sm btn-danger float-end mx-2" href="{{ url_for('notes_delete', note_id=note.title) }}">Delete Note</a> -->
+
       <form action="{{ url_for('notes_delete', note_id=note.id) }}" method="POST" style="display: inline;">
         <button type="submit" class="btn btn-sm btn-danger float-end mx-2">Delete Note</button>
       </form>
+
     </h4>
     <div class="card-text my-3">
       {{ note.description }}
+
+      <a href="{{ url_for('notes_edit', note_id=note.id) }}" class="btn btn-sm btn-warning float-end mx-2">Edit Note</a>
+    
     </div>
     <div class="card-footer text-muted">
       Tags: 
       {% for t in note.tags %}
         <a href="{{ url_for('tags_view', tag_name=t.name) }}">{{ t.name }}</a>
+        
         <form action="{{ url_for('delete_notes_by_tag', tag_id=t.id) }}" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-sm btn-danger float-end mx-2">Delete all Notes using this Tag</button>
-        </form>
+        </form> 
+         
     {% endfor %}
       <br>
       Last update: {{ note.updated_date }}

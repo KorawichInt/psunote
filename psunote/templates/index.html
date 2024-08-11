@@ -8,7 +8,13 @@
 {% for note in notes %}
 <div class="card my-3">
   <div class="card-body">
-    <h4 class="card-title">{{ note.title }}</h4>
+    <h4 class="card-title">
+      {{ note.title }}
+      <!-- <a class="btn btn-sm btn-danger float-end mx-2" href="{{ url_for('notes_delete', note_id=note.title) }}">Delete Note</a> -->
+      <form action="{{ url_for('notes_delete', note_id=note.id) }}" method="POST" style="display: inline;">
+        <button type="submit" class="btn btn-sm btn-danger float-end mx-2">Delete Note</button>
+      </form>
+    </h4>
     <div class="card-text my-3">
       {{ note.description }}
     </div>

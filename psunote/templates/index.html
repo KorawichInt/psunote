@@ -22,6 +22,9 @@
       Tags: 
       {% for t in note.tags %}
         <a href="{{ url_for('tags_view', tag_name=t.name) }}">{{ t.name }}</a>
+        <form action="{{ url_for('delete_notes_by_tag', tag_id=t.id) }}" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-sm btn-danger float-end mx-2">Delete all Notes using this Tag</button>
+        </form>
     {% endfor %}
       <br>
       Last update: {{ note.updated_date }}

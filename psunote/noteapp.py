@@ -94,6 +94,45 @@ def delete_notes_by_tag(tag_id):
     return flask.redirect(flask.url_for("index"))
 
 
+# Edit each note
+@app.route("/notes/edit/<note_id>", methods=["GET", "POST"])
+def notes_edit(note_id):
+    db = models.db
+    note = db.session.execute(
+        db.select(models.Note).where(models.Note.id == note_id)
+    ).scalars().first()
+
+    if not note:
+        return flask.redirect(flask.url_for("index"))
+    
+    form = forms.NoteForm(obj=note)
+    
+    if form.validate_on_submit():
+        note.title = form.title.data
+        note.description = form.description.data
+        note.tags.clear()
+        for tag_name in form.tags.data:
+            tag = db.session.execute(
+                db.select(models.Tag).where(models.Tag.name == tag_name)
+            ).scalars().first()
+            
+            if not tag:
+                tag = models.Tag(name=tag_name)
+                db.session.add(tag)
+            
+            note.tags.append(tag)
+            
+        db.session.commit()
+        return flask.redirect(flask.url_for("index"))
+
+    return flask.render_template(
+        "notes-edit.html", 
+        form=form, 
+        note=note
+    )
+
+
+# View all notes by tag
 @app.route("/tags/<tag_name>")
 def tags_view(tag_name):
     db = models.db
